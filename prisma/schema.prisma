@@ -121,14 +121,14 @@ model Product {
 }
 
 model StoreSettings {
-  id            String   @id
-  storeName     String   @default("Benkaso Collection")
-  bankName      String?
-  accountName   String?
-  accountNumber String?
-  whatsappNumber String?
+  id              String   @id
+  storeName       String   @default("Benkaso Collection")
+  bankName        String?
+  accountName     String?
+  accountNumber   String?
+  whatsappNumber  String?
   whatsappMessage String?
-  updatedAt     DateTime
+  updatedAt       DateTime
 
   @@map("StoreSettings")
 }
