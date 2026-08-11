@@ -1,0 +1,163 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { verifyToken } from "@/lib/jwt";
+
+type RouteContext = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export async function PATCH(
+  req: NextRequest,
+  context: RouteContext
+) {
+  try {
+    const token = req.cookies.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please log in.",
+        },
+        { status: 401 }
+      );
+    }
+
+    const payload = verifyToken(token);
+
+    if (!payload) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Your session has expired. Please log in again.",
+        },
+        { status: 401 }
+      );
+    }
+
+    const userId = payload.userId ?? payload.id;
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid authentication session.",
+        },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await context.params;
+
+    const body = await req.json().catch(() => ({}));
+
+    const paymentReference =
+      typeof body.paymentReference === "string"
+        ? body.paymentReference.trim()
+        : "";
+
+    if (!paymentReference) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Payment reference is required.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const order = await prisma.order.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (!order) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Order not found.",
+        },
+        { status: 404 }
+      );
+    }
+
+    if (order.paymentStatus === "PAID") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "This order has already been paid.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (
+      order.paymentStatus === "AWAITING_VERIFICATION"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "This payment is already awaiting verification.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (order.paymentMethod !== "BANK_TRANSFER") {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "This order does not use bank transfer.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: {
+        id: order.id,
+      },
+
+      data: {
+        paymentReference,
+
+        paymentStatus:
+          "AWAITING_VERIFICATION",
+
+        status:
+          "AWAITING_PAYMENT_VERIFICATION",
+
+        paymentConfirmedAt:
+          new Date(),
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+
+      message:
+        "Payment submitted. We will verify your transfer shortly.",
+
+      order: updatedOrder,
+    });
+  } catch (error) {
+    console.error(
+      "Submit payment error:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to submit payment.",
+      },
+      { status: 500 }
+    );
+  }
+}

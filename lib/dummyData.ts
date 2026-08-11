@@ -1,0 +1,201 @@
+import type { Product } from "@/types";
+
+export const dummyProducts: Product[] = [
+  {
+    id: "prod-suit-001",
+    slug: "royal-black-bespoke-suit",
+    name: "Royal Black Bespoke Suit",
+    category: "Bespoke Suits",
+    price: 285000,
+    compareAtPrice: 320000,
+    images: [
+      "https://images.unsplash.com/photo-1598808503746-f34c53b9323e?w=900",
+    ],
+    description:
+      "A refined black bespoke suit tailored for a sharp, timeless and sophisticated appearance.",
+    colors: ["Black", "Charcoal"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 4.9,
+    reviewCount: 24,
+    isNew: true,
+    isFeatured: true,
+    stock: 12,
+    inStock: true,
+  },
+
+  {
+    id: "prod-agbada-001",
+    slug: "royal-gold-embroidered-agbada",
+    name: "Royal Gold Embroidered Agbada",
+    category: "Agbada",
+    price: 195000,
+    compareAtPrice: 225000,
+    images: [
+      "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=900",
+    ],
+    description:
+      "Premium traditional agbada featuring elegant embroidery and a luxurious finish.",
+    colors: ["Gold", "Cream", "White"],
+    sizes: ["M", "L", "XL", "XXL"],
+    rating: 4.8,
+    reviewCount: 18,
+    isNew: true,
+    isFeatured: true,
+    stock: 8,
+    inStock: true,
+  },
+
+  {
+    id: "prod-senator-001",
+    slug: "midnight-blue-senator-wear",
+    name: "Midnight Blue Senator Wear",
+    category: "Senator Wear",
+    price: 145000,
+    compareAtPrice: 165000,
+    images: [
+      "https://images.unsplash.com/photo-1627225924765-552d49cf47ad?w=900",
+    ],
+    description:
+      "Modern senator wear designed with clean lines, premium fabric and understated luxury.",
+    colors: ["Midnight Blue", "Navy"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 4.7,
+    reviewCount: 15,
+    isNew: true,
+    isFeatured: true,
+    stock: 15,
+    inStock: true,
+  },
+
+  {
+    id: "prod-wedding-001",
+    slug: "ivory-wedding-suit",
+    name: "Ivory Wedding Suit",
+    category: "Wedding Suits",
+    price: 350000,
+    compareAtPrice: 400000,
+    images: [
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=900",
+    ],
+    description:
+      "A sophisticated ivory wedding suit crafted for unforgettable wedding moments.",
+    colors: ["Ivory", "Cream", "White"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 5,
+    reviewCount: 31,
+    isNew: false,
+    isFeatured: true,
+    stock: 6,
+    inStock: true,
+  },
+
+  {
+    id: "prod-kaftan-001",
+    slug: "premium-cream-kaftan",
+    name: "Premium Cream Kaftan",
+    category: "Kaftans",
+    price: 120000,
+    compareAtPrice: 140000,
+    images: [
+      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=900",
+    ],
+    description:
+      "A premium cream kaftan combining traditional elegance with contemporary tailoring.",
+    colors: ["Cream", "Beige", "White"],
+    sizes: ["M", "L", "XL", "XXL"],
+    rating: 4.8,
+    reviewCount: 12,
+    isNew: true,
+    isFeatured: false,
+    stock: 20,
+    inStock: true,
+  },
+
+  {
+    id: "prod-native-001",
+    slug: "emerald-native-wear",
+    name: "Emerald Native Wear",
+    category: "Native Wears",
+    price: 135000,
+    compareAtPrice: 155000,
+    images: [
+      "https://images.unsplash.com/photo-1610652492500-ded49ceeb378?w=900",
+    ],
+    description:
+      "Contemporary Nigerian native wear with premium finishing and a confident silhouette.",
+    colors: ["Emerald", "Green", "Black"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 4.6,
+    reviewCount: 9,
+    isNew: false,
+    isFeatured: false,
+    stock: 14,
+    inStock: true,
+  },
+
+  {
+    id: "prod-corporate-001",
+    slug: "charcoal-corporate-suit",
+    name: "Charcoal Corporate Suit",
+    category: "Corporate Wears",
+    price: 220000,
+    compareAtPrice: 250000,
+    images: [
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=900",
+    ],
+    description:
+      "A polished charcoal suit designed for executives, business meetings and formal occasions.",
+    colors: ["Charcoal", "Grey", "Black"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    rating: 4.8,
+    reviewCount: 21,
+    isNew: false,
+    isFeatured: true,
+    stock: 10,
+    inStock: true,
+  },
+
+  {
+    id: "prod-shoes-001",
+    slug: "italian-leather-loafers",
+    name: "Italian Leather Loafers",
+    category: "Luxury Shoes",
+    price: 95000,
+    compareAtPrice: 115000,
+    images: [
+      "https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=900",
+    ],
+    description:
+      "Elegant leather loafers designed to complement premium suits and traditional outfits.",
+    colors: ["Black", "Brown", "Dark Brown"],
+    sizes: ["40", "41", "42", "43", "44", "45"],
+    rating: 4.7,
+    reviewCount: 17,
+    isNew: true,
+    isFeatured: false,
+    stock: 25,
+    inStock: true,
+  },
+
+  {
+    id: "prod-accessory-001",
+    slug: "premium-silk-pocket-square",
+    name: "Premium Silk Pocket Square",
+    category: "Luxury Accessories",
+    price: 25000,
+    compareAtPrice: 30000,
+    images: [
+      "https://images.unsplash.com/photo-1589756823695-278bc923f962?w=900",
+    ],
+    description:
+      "A premium silk pocket square that adds a sophisticated finishing touch to formal dressing.",
+    colors: ["Gold", "Black", "White", "Navy"],
+    sizes: ["One Size"],
+    rating: 4.9,
+    reviewCount: 8,
+    isNew: true,
+    isFeatured: false,
+    stock: 40,
+    inStock: true,
+  },
+];
