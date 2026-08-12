@@ -2,17 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/jwt";
 
-type RouteContext = {
-  params: Promise<{
-    id: string;
-  }>;
-};
-
-export async function PATCH(
-  req: NextRequest,
-  context: RouteContext
-) {
+export async function PATCH(req: NextRequest) {
   try {
+    // --------------------------------------------------
+    // AUTHENTICATION
+    // --------------------------------------------------
+
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
@@ -31,7 +26,8 @@ export async function PATCH(
       return NextResponse.json(
         {
           success: false,
-          message: "Your session has expired. Please log in again.",
+          message:
+            "Your session has expired. Please log in again.",
         },
         { status: 401 }
       );
@@ -49,14 +45,31 @@ export async function PATCH(
       );
     }
 
-    const { id } = await context.params;
+    // --------------------------------------------------
+    // REQUEST BODY
+    // --------------------------------------------------
 
     const body = await req.json().catch(() => ({}));
+
+    const orderId =
+      typeof body.orderId === "string"
+        ? body.orderId.trim()
+        : "";
 
     const paymentReference =
       typeof body.paymentReference === "string"
         ? body.paymentReference.trim()
         : "";
+
+    if (!orderId) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Order ID is required.",
+        },
+        { status: 400 }
+      );
+    }
 
     if (!paymentReference) {
       return NextResponse.json(
@@ -68,9 +81,13 @@ export async function PATCH(
       );
     }
 
+    // --------------------------------------------------
+    // FIND ORDER
+    // --------------------------------------------------
+
     const order = await prisma.order.findFirst({
       where: {
-        id,
+        id: orderId,
         userId,
       },
     });
@@ -85,6 +102,10 @@ export async function PATCH(
       );
     }
 
+    // --------------------------------------------------
+    // PAYMENT VALIDATION
+    // --------------------------------------------------
+
     if (order.paymentStatus === "PAID") {
       return NextResponse.json(
         {
@@ -96,7 +117,8 @@ export async function PATCH(
     }
 
     if (
-      order.paymentStatus === "AWAITING_VERIFICATION"
+      order.paymentStatus ===
+      "AWAITING_VERIFICATION"
     ) {
       return NextResponse.json(
         {
@@ -108,7 +130,9 @@ export async function PATCH(
       );
     }
 
-    if (order.paymentMethod !== "BANK_TRANSFER") {
+    if (
+      order.paymentMethod !== "BANK_TRANSFER"
+    ) {
       return NextResponse.json(
         {
           success: false,
@@ -119,24 +143,33 @@ export async function PATCH(
       );
     }
 
-    const updatedOrder = await prisma.order.update({
-      where: {
-        id: order.id,
-      },
+    // --------------------------------------------------
+    // UPDATE PAYMENT
+    // --------------------------------------------------
 
-      data: {
-        paymentReference,
+    const updatedOrder =
+      await prisma.order.update({
+        where: {
+          id: order.id,
+        },
 
-        paymentStatus:
-          "AWAITING_VERIFICATION",
+        data: {
+          paymentReference,
 
-        status:
-          "AWAITING_PAYMENT_VERIFICATION",
+          paymentStatus:
+            "AWAITING_VERIFICATION",
 
-        paymentConfirmedAt:
-          new Date(),
-      },
-    });
+          status:
+            "AWAITING_PAYMENT_VERIFICATION",
+
+          paymentConfirmedAt:
+            new Date(),
+        },
+      });
+
+    // --------------------------------------------------
+    // RESPONSE
+    // --------------------------------------------------
 
     return NextResponse.json({
       success: true,
@@ -148,7 +181,7 @@ export async function PATCH(
     });
   } catch (error) {
     console.error(
-      "Submit payment error:",
+      "PATCH /api/orders/payment error:",
       error
     );
 
