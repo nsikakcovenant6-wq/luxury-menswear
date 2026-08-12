@@ -3,31 +3,29 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl= env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Cart {
-  id        String   @id
-  userId    String   @unique
-  createdAt DateTime @default(now())
+  id        String     @id
+  userId    String     @unique
+  createdAt DateTime   @default(now())
   updatedAt DateTime
-
-  User     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  CartItem CartItem[]
+  User      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  CartItem  CartItem[]
 
   @@map("Cart")
 }
 
 model CartItem {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   cartId    String
   productId String
-  quantity  Int    @default(1)
-
-  Product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  Cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  quantity  Int     @default(1)
+  Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId])
   @@index([productId])
@@ -47,27 +45,25 @@ model Measurement {
   notes     String?
   createdAt DateTime @default(now())
   updatedAt DateTime
-
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("Measurement")
 }
 
 model Order {
-  id                 String    @id
+  id                 String      @id
   userId             String
   total              Float
-  status             String    @default("PENDING")
-  paymentMethod      String    @default("BANK_TRANSFER")
-  paymentStatus      String    @default("PENDING")
+  status             String      @default("PENDING")
+  paymentMethod      String      @default("BANK_TRANSFER")
+  paymentStatus      String      @default("PENDING")
   paymentReference   String?
   paymentConfirmedAt DateTime?
-  createdAt          DateTime  @default(now())
+  createdAt          DateTime    @default(now())
   updatedAt          DateTime
-
-  User      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  OrderItem OrderItem[]
+  User               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  OrderItem          OrderItem[]
 
   @@index([createdAt])
   @@index([paymentStatus])
@@ -77,14 +73,13 @@ model Order {
 }
 
 model OrderItem {
-  id        String @id
+  id        String  @id
   orderId   String
   productId String
   quantity  Int
   price     Float
-
-  Product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  Order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  Order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@index([productId])
@@ -92,28 +87,27 @@ model OrderItem {
 }
 
 model Product {
-  id             String   @id
-  slug           String   @unique
+  id             String      @id
+  slug           String      @unique
   name           String
   category       String
   description    String
   image          String
-  imagesJson     String   @default("[]")
-  colorsJson     String   @default("[]")
-  sizesJson      String   @default("[]")
+  imagesJson     String      @default("[]")
+  colorsJson     String      @default("[]")
+  sizesJson      String      @default("[]")
   price          Float
   compareAtPrice Float?
-  stock          Int      @default(0)
-  rating         Float    @default(0)
-  reviewCount    Int      @default(0)
-  isNew          Boolean  @default(false)
-  isFeatured     Boolean  @default(false)
-  inStock        Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  CartItem  CartItem[]
-  OrderItem OrderItem[]
+  stock          Int         @default(0)
+  rating         Float       @default(0)
+  reviewCount    Int         @default(0)
+  isNew          Boolean     @default(false)
+  isFeatured     Boolean     @default(false)
+  inStock        Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  CartItem       CartItem[]
+  OrderItem      OrderItem[]
 
   @@index([inStock])
   @@index([isFeatured])
@@ -122,28 +116,27 @@ model Product {
 }
 
 model StoreSettings {
-  id            String   @id
-  storeName     String   @default("Benkaso Collection")
-  bankName      String?
-  accountName   String?
-  accountNumber String?
-  whatsappNumber String?
+  id              String   @id
+  storeName       String   @default("Benkaso Collection")
+  bankName        String?
+  accountName     String?
+  accountNumber   String?
+  whatsappNumber  String?
   whatsappMessage String?
-  updatedAt     DateTime
+  updatedAt       DateTime
 
   @@map("StoreSettings")
 }
 
 model User {
-  id        String   @id
-  name      String
-  email     String   @unique
-  password  String
-  phone     String?
-  role      String   @default("CUSTOMER")
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-
+  id          String        @id
+  name        String
+  email       String        @unique
+  password    String
+  phone       String?
+  role        String        @default("CUSTOMER")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime
   Cart        Cart?
   Measurement Measurement[]
   Order       Order[]
