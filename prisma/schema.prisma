@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("postgresql://postgres.vyslvcgfhycbbkcvxbve:Blessycovenan@aws-0-eu-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true")
+  directUrl= env("postgresql://postgres.vyslvcgfhycbbkcvxbve:Blessycovenan@aws-0-eu-west-2.pooler.supabase.com:5432/postgres")
 }
 
 model Cart {
