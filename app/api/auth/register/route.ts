@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "crypto";
+
 import { prisma } from "@/lib/prisma";
 import {
   hashPassword,
@@ -35,6 +37,7 @@ export async function POST(req: NextRequest) {
     const normalizedEmail =
       email.trim().toLowerCase();
 
+    // Check whether the email already exists
     const existingUser =
       await prisma.user.findUnique({
         where: {
@@ -52,15 +55,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Hash password before storing it
     const hashedPassword =
       await hashPassword(password);
 
+    // Create user
+    // Your Prisma User model requires an ID,
+    // so generate one explicitly.
     const user = await prisma.user.create({
       data: {
+        id: randomUUID(),
+
         name: name.trim(),
+
         email: normalizedEmail,
+
         password: hashedPassword,
       },
+
       select: {
         id: true,
         name: true,
@@ -71,12 +83,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Create authentication token
     const token = createAuthToken({
       userId: user.id,
       email: user.email,
       role: user.role,
     });
 
+    // Create response
     const response = NextResponse.json(
       {
         success: true,
@@ -87,12 +101,17 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
 
+    // Store JWT in HTTP-only cookie
     response.cookies.set("token", token, {
       httpOnly: true,
+
       secure:
         process.env.NODE_ENV === "production",
+
       sameSite: "lax",
+
       maxAge: 60 * 60 * 24 * 7,
+
       path: "/",
     });
 

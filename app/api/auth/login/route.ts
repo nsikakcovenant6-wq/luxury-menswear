@@ -75,6 +75,7 @@ export async function POST(req: NextRequest) {
           name: user.name,
           email: user.email,
           role: user.role,
+          phone: user.phone,
           createdAt: user.createdAt,
         },
       },
@@ -91,7 +92,10 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("POST /api/auth/login error:", error);
+    console.error(
+      "POST /api/auth/login error:",
+      error
+    );
 
     return NextResponse.json(
       {
